@@ -120,12 +120,14 @@
 <body>
 
     <header>
-        <h1>[Insert Paper Title Here]</h1>
+        <h1>Domain Expansion: A Latent Space Construction Framework for Multi-Task Learning</h1>
         
         <div class="authors">
-            <a href="#" style="text-decoration:none; color:#0066cc;">Author One</a>,
-            <a href="#" style="text-decoration:none; color:#0066cc;">Author Two</a>,
-            <a href="#" style="text-decoration:none; color:#0066cc;">Author Three</a> 
+            <a href="https://huang-chiyao.github.io/" style="text-decoration:none; color:#0066cc;">Chi-Yao Huang</a>,
+            <a href="https://github.com/Chickeninvader" style="text-decoration:none; color:#0066cc;">Khoa Vo</a>,
+            <a href="https://aayush-v.github.io/" style="text-decoration:none; color:#0066cc;">Aayush Verma</a>,
+            <a href="https://www.rider.edu/about/faculty-staff-directory/duo-lu" style="text-decoration:none; color:#0066cc;">Duo Lu</a>,
+            <a href="https://faculty.engineering.asu.edu/yezhouyang/" style="text-decoration:none; color:#0066cc;">Yezhou Yang</a>  
         </div>
 
         <div class="venue">
@@ -134,21 +136,23 @@
 
         <div class="buttons">
             <a href="https://iclr.cc/" class="btn">
-                <span style="font-weight:900; font-family:serif; margin-right:8px;">ICLR</span>
+                <img src="doc/icons/iclr_logo.png" 
+                     alt="ICLR" 
+                     style="height:20px; width:auto; vertical-align:middle; margin-right:8px;">
                 ICLR 2026
             </a>
             
             <a href="https://arxiv.org/abs/2601.20069" class="btn">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/ArXiv_logo_2022.svg/1200px-ArXiv_logo_2022.svg.png" 
-                     alt="arXiv"
-                     style="height:15px; vertical-align:middle; margin-right:5px; filter: brightness(0) invert(1);">
+                <img src="doc/icons/arxiv_logo.png" 
+                     alt="arXiv" 
+                     style="height:20px; width:auto; vertical-align:middle; margin-right:8px;">
                 Paper
             </a>
             
             <a href="https://github.com/username/repository" class="btn">
-                <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
-                     alt="GitHub"
-                     style="height:20px; vertical-align:middle; margin-right:5px; filter: brightness(0) invert(1);">
+                <img src="doc/icons/github_logo.png" 
+                     alt="GitHub" 
+                     style="height:20px; width:auto; vertical-align:middle; margin-right:8px;">
                 Code
             </a>
         </div>
@@ -173,21 +177,29 @@
     <div class="section">
         <h2>Abstract</h2>
         <p>
-            [Insert the first paragraph of your abstract here. For example: "Recent advancements in foundation models have enabled..."]
+            Training a single network with multiple objectives often leads to conflicting gradients that degrade shared representations, forcing them into a compromised state
+            that is suboptimal for any single task—a problem we term latent representation
+            collapse. We introduce Domain Expansion, a framework that prevents these conflicts by restructuring the latent space itself. Our framework uses a novel orthogonal pooling mechanism to construct a latent space where each objective is
+            assigned to a mutually orthogonal subspace. 
         </p>
         <p>
-            [Insert the second paragraph of your abstract here. For example: "To address these challenges, we propose..."]
+            We validate our approach across diverse benchmarks—including ShapeNet, MPIIGaze, and Rotated MNIST—on
+            challenging multi-objective problems combining classification with pose and gaze
+            estimation. Our experiments demonstrate that this structure not only prevents
+            collapse but also yields an explicit, interpretable, and compositional latent space
+            where concepts can be directly manipulated
         </p>
     </div>
 
     <div class="section">
         <h2>Method Overview</h2>
-        <img src="path/to/method_diagram.png" alt="Method Framework" class="poster-img" onerror="this.style.display='none';">
+        <img src="doc/main.png" alt="Method Framework" class="poster-img" onerror="this.style.display='none';">
         
         <div class="placeholder-box" style="display:none;">[Insert Method Diagram Image Here]</div>
 
         <p style="color:#666; font-size: 0.9em; margin-top:10px;">
-            <strong>Method overview:</strong> [Insert a brief caption describing the figure above.]
+            <strong>Method overview:</strong> (a) Latent representation collapse. In standard multi-task learning, competing objectives lead to latent representation collapse, where the solution spaces for different concepts (colored ellipses) overlap in only a small, compromised region.
+            (b) Domain Expansion. In contrast, our method assigns each concept to an orthogonal basis vector in the latent space, preventing interference and creating a structured, interpretable representation where features for each concept are clearly separated.
         </p>
     </div>
 
