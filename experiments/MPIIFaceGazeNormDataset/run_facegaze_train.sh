@@ -83,7 +83,7 @@ echo "================================="
 
 # Run the experiment
 module load mamba/latest
-source activate vocal
+source activate domain
 wandb login --verify
 cd "$BASE_DIR"
 

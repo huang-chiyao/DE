@@ -86,10 +86,10 @@ echo "================================="
 # Run the experiment
 # >>> Conda environment setup <<<
 module load mamba/latest
-echo "[INFO] Activating conda environment 'vocal'..."
+echo "[INFO] Activating conda environment 'domain'..."
 export QT_XCB_GL_INTEGRATION=none
-source activate vocal
-echo "[INFO] Conda environment 'vocal' activated."
+source activate domain
+echo "[INFO] Conda environment 'domain' activated."
 
 cd "$BASE_DIR"
 
