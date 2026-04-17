@@ -22,12 +22,6 @@ conda env create -f environment.yaml
 conda activate domain
 ```
 
-If the environment already exists, use:
-
-```bash
-conda env update -f environment.yaml --prune
-```
-
 ### 2. Construct ShapeNet rendering dataset
 
 Run from repository root:
