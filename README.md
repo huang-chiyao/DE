@@ -15,3 +15,40 @@ Training a single network with multiple objectives often leads to conflicting gr
 (a) **Latent representation collapse**: In standard multi-task learning, competing objectives lead to latent representation collapse, where the solution spaces for different concepts (colored ellipses) overlap in only a small, compromised region.
 (b) **Domain Expansion**: In contrast, our method assigns each concept to an orthogonal basis vector in the latent space, preventing interference and creating a structured, interpretable representation where features for each concept are clearly separated.
 
+## Tutorial
+
+### 1. Create and activate conda environment
+
+```bash
+conda env create -f environment.yaml
+conda activate domain
+```
+
+If the environment already exists, use:
+
+```bash
+conda env update -f environment.yaml --prune
+```
+
+### 2. Construct ShapeNet rendering dataset
+
+Run from repository root:
+
+```bash
+./data_collection/data_collection.sh --shapenet-root your/path/ShapeNet/ShapeNetVox32/ --output-root your/path/output/
+```
+
+### 3. Run ShapeNet experiment
+
+Run from repository root:
+
+```bash
+./experiments/ShapeNetRenderingDataset/run_shapenet_train.sh
+```
+
+On Slurm clusters, submit as a batch job:
+
+```bash
+sbatch experiments/ShapeNetRenderingDataset/run_shapenet_train.sh
+```
+

@@ -23,8 +23,8 @@
 set -euo pipefail
 
 # Get script directory
-BASE_DIR="/home/chuan166/domain"
-SCRIPT_DIR="${BASE_DIR}/experiments/ShapeNetRenderingDataset"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASE_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 CONFIG_DIR="${SCRIPT_DIR}/config"
 
 # Default configuration
@@ -103,14 +103,10 @@ for ((i=0; i<${#EXTRA_ARGS[@]}; i++)); do
     fi
 done
 
-METHOD="Domain"   # default
-
-
-for ((i=0; i<${#EXTRA_ARGS[@]}; i++)); do
-    if [[ "${EXTRA_ARGS[$i]}" == "--method" && $((i+1)) -lt ${#EXTRA_ARGS[@]} ]]; then
-        METHOD="${EXTRA_ARGS[$((i+1))]}"
-    fi
-done
+# parser_utils.py requires --method, so inject default when not provided.
+if [[ " ${EXTRA_ARGS[*]} " != *" --method "* ]]; then
+    EXTRA_ARGS+=("--method" "${METHOD}")
+fi
 
 case "$METHOD" in
     Domain|RNC)
