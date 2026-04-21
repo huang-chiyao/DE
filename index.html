@@ -115,7 +115,44 @@
             border: 2px dashed #ccc;
             border-radius: 8px;
         }
+        h3 {
+            font-size: 1.15rem;
+            margin: 24px 0 10px;
+            color: #222;
+        }
+        .theory-block p {
+            margin: 10px 0;
+        }
+        .math-display {
+            overflow-x: auto;
+            margin: 14px 0 18px;
+            padding-bottom: 4px;
+        }
+        .caption-text {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        .caption-center {
+            text-align: center;
+        }
     </style>
+    <script>
+        window.MathJax = {
+            loader: {
+                load: ['[tex]/ams']
+            },
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                packages: {'[+]': ['ams']}
+            },
+            chtml: {
+                scale: 1
+            }
+        };
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 <body>
 
@@ -169,7 +206,7 @@
                 allowfullscreen>
             </iframe>
         </div>
-        <p style="text-align:center; font-size:0.9em; color:#666; margin-top:10px;">
+        <p class="caption-text caption-center">
             *Video plays automatically (muted).*
         </p>
     </div>
@@ -192,14 +229,174 @@
     </div>
 
     <div class="section">
-        <h2>Method Overview</h2>
+        <h2>Problem Statement</h2>
+        <img src="doc/main.png" alt="Problem statement: latent representation collapse" class="poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="placeholder-box" style="display:none;">Problem Statement Figure Placeholder</div>
+        <p>
+            (a) Latent representation collapse. In standard multi-task learning, competing objectives lead to latent representation collapse, where the solution spaces for different concepts (colored
+            ellipses) overlap in only a small, compromised region. 
+        </p>
+        <p>
+            (b) Domain Expansion. In contrast, our method assigns each concept to an orthogonal basis vector in the latent space, preventing interference and creating a structured, interpretable representation where features for each concept are
+            clearly separated.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Orthogonal Pooling</h2>
+        <img src="doc/idea.png" alt="Domain Expansion main figure" class="poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="placeholder-box" style="display:none;">Main Figure Placeholder</div>
+        <p>
+            A single latent vector represents multiple concepts through orthogonal projections. (a) An anamorphic object, such as a cylinder, reveals different primitive
+            concepts (a circle vs. a rectangle) when viewed from orthogonal directions.
+        </p>
+        <p>
+            (a) An anamorphic object, such as a cylinder, reveals different primitive concepts (a circle vs. a rectangle) when viewed from orthogonal directions.
+        </p>
+        <p>
+            (b) Analogously, our method treats a single latent feature as a rich object that encodes multiple concepts simultaneously.
+            The specific value for each concept is determined by its projection onto a corresponding orthogonal
+            axis in the latent space.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Properties and Operators</h2>
+        <img src="doc/concept_n_latent_space.png" alt="Properties and operators in orthogonal latent space" class="poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="placeholder-box" style="display:none;">Properties and Operators Figure Placeholder</div>
+        <p>
+            The orthogonal structure of our method is not merely a training aid; it endows the latent space with
+            powerful properties, turning it into an interpretable and compositional concept algebra.
+        </p>
+        <p>
+            This compositional structure enables controlled edits, disentangled analysis, and more reliable multi-objective behavior.
+        </p>
+        <div class="theory-block">
+            <h3>Property 1: Orthogonality of Target Concepts</h3>
+            <p>
+                Because each projection subspace \( \mathcal{F}^{\text{proj}}_m \) is orthogonal to the others, the target concepts they represent are disentangled in the latent space:
+            </p>
+            <div class="math-display">
+                \[
+                \mathcal{F}^{\text{proj}}_0 \perp \mathcal{F}^{\text{proj}}_1 \perp \cdots \perp \mathcal{F}^{\text{proj}}_{M-1}
+                \implies
+                \mathcal{C}_0 \perp \mathcal{C}_1 \perp \cdots \perp \mathcal{C}_{M-1}.
+                \]
+            </div>
+
+            <h3>Property 2: Multi-concept Encoding</h3>
+            <p>
+                A single latent feature \( f_i \) simultaneously encodes a full instantiated concept \( c_i \). The feature can be decomposed into orthogonal projections, which are then decoded into their corresponding target instantiated concepts, as illustrated in the figure above:
+            </p>
+            <div class="math-display">
+                \[
+                f_i \xrightarrow{\text{Pooling}} \{f^{\text{proj}, 0}_i, \dots, f^{\text{proj}, M-1}_i\}
+                \xrightarrow{\text{Dec}}
+                \{c^{0}_i, \dots, c^{M-1}_i\}
+                \rightarrow c_i.
+                \]
+            </div>
+            <p>
+                Conversely, the full latent feature can be reconstructed from its components:
+            </p>
+            <div class="math-display">
+                \[
+                c_i \rightarrow \{c^{0}_i, \dots, c^{M-1}_i\}
+                \xrightarrow{\text{Dec}^{-1}}
+                \{f^{\text{proj}, 0}_i, \dots, f^{\text{proj}, M-1}_i\}
+                \xrightarrow{\text{Reconst}}
+                f_i,
+                \]
+            </div>
+            <p>
+                where the reconstruction is defined as:
+            </p>
+            <div class="math-display">
+                \[
+                f_i = \mu + \sum_{m=0}^{M-1} f_i^{\text{proj}, m}.
+                \]
+            </div>
+
+            <h3>Operator 1: Concept-Specific Adjustment (\(\oplus^m\) and \(\ominus^m\))</h3>
+            <p>
+                This operator adjusts an instantiated concept \( c_i \) by applying a change defined by a single target instantiated concept \( c^m_\Delta \in \mathcal{C}_m \). The operation modifies the latent feature \( f_i \) without affecting any other target concepts. We first obtain the latent vector for the change:
+            </p>
+            <div class="math-display">
+                \[
+                f^{\text{proj}, m}_{\Delta} = \text{Dec}^{-1}_m(c^m_{\Delta}).
+                \]
+            </div>
+            <p>
+                The adjusted latent feature is then given by simple vector addition or subtraction:
+            </p>
+            <div class="math-display">
+                \[
+                f_j = f_i \pm f^{\text{proj}, m}_\Delta.
+                \]
+            </div>
+            <p>
+                The correspondence between the concept and latent spaces is:
+            </p>
+            <div class="math-display">
+                \[
+                \begin{aligned}
+                c_i \oplus^m c^m_\Delta
+                &\rightarrow \{c^{0}_i, \dots, (c^{m}_i \oplus^m c^{m}_{\Delta}), \dots, c^{M-1}_i\} \\
+                &\xrightarrow{\text{Dec}^{-1}} \{f^{\text{proj}, 0}_i, \dots, (f^{\text{proj}, m}_i + f^{\text{proj}, m}_\Delta), \dots, f^{\text{proj}, M-1}_i \} \\
+                &\xrightarrow{\text{Reconst}} f_i + f^{\text{proj}, m}_\Delta.
+                \end{aligned}
+                \]
+            </div>
+            <p>
+                The derivation for the subtraction operator \( \ominus^{m} \) is analogous.
+            </p>
+
+            <h3>Operator 2: Concept Composition (\(\oplus\) and \(\ominus\))</h3>
+            <p>
+                This operator composes two full instantiated concepts, \( c_p \) and \( c_q \), by operating on their corresponding latent representations, \( f_p \) and \( f_q \). The composition is achieved through simple vector addition or subtraction:
+            </p>
+            <div class="math-display">
+                \[
+                f_{pq} = f_p \pm f_q.
+                \]
+            </div>
+            <p>
+                This operation corresponds to a component-wise combination in each orthogonal subspace:
+            </p>
+            <div class="math-display">
+                \[
+                \begin{aligned}
+                c_{p} \oplus c_{q}
+                &\rightarrow \{(c^{0}_p \oplus^0 c^{0}_q), (c^{1}_p \oplus^1 c^{1}_q), \dots, (c^{M-1}_p \oplus^{M-1} c^{M-1}_q)\} \\
+                &\xrightarrow{\text{Dec}^{-1}} \{(f^{\text{proj}, 0}_p + f^{\text{proj}, 0}_q), (f^{\text{proj}, 1}_p + f^{\text{proj}, 1}_q), \dots, (f^{\text{proj}, M-1}_p + f^{\text{proj}, M-1}_q)\} \\
+                &\xrightarrow{\text{Reconst}} f_p + f_q.
+                \end{aligned}
+                \]
+            </div>
+            <p>
+                The derivation for the subtraction operator \( \ominus \) is analogous.
+            </p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Experiment Results</h2>
+        <img src="doc/experiments.png" alt="Experiment results summary" class="poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="placeholder-box" style="display:none;">Experiment Results Figure Placeholder</div>
+        <p>
+            We evaluate Domain Expansion on ShapeNet, MPIIGaze, and Rotated MNIST across mixed objective settings (classification, pose, and gaze estimation).
+            Results show reduced latent collapse and improved task performance compared with conventional shared-latent baselines.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Poster</h2>
         <a href="doc/poster.pdf" target="_blank" title="Click to download full-resolution poster">
             <img src="doc/poster.png" alt="ICLR 2026 Project Poster" class="poster-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
             <div class="placeholder-box" style="display:none;">Poster Placeholder</div>
         </a>
-        <p style="color:#666; font-size: 0.9em; margin-top:10px;">
-            <strong>Method overview:</strong> (a) Latent representation collapse. In standard multi-task learning, competing objectives lead to latent representation collapse, where the solution spaces for different concepts (colored ellipses) overlap in only a small, compromised region.
-            (b) Domain Expansion. In contrast, our method assigns each concept to an orthogonal basis vector in the latent space, preventing interference and creating a structured, interpretable representation where features for each concept are clearly separated.
+        <p class="caption-text">
+            Click the poster to open the full PDF.
         </p>
     </div>
 
